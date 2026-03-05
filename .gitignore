@@ -5,3 +5,7 @@ venv
 env
 .env
 .venv
+
+# Dataset
+IMA205-challenge/**
+ima205-challenge-2026.zip
