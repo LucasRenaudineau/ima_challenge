@@ -20,6 +20,7 @@ for _, row in metadata.iterrows():
 # This is to verify it did not take the title row with "ID" and "LABEL"
 print(couples[0])
 print(couples[1])
+print(couples[-1])
 
 # Shuffling : we don't want bias between the split for the training and the split for the validation
 random.shuffle(couples)
@@ -47,5 +48,6 @@ def make_dataset(couples): # this is just for adjusting to the required format f
 train_ds      = make_dataset(train_couples)
 validation_ds = make_dataset(validation_couples)
 
+print("Should adds up to 28901 :")
 print("Number of training samples:   %d" % tf.data.experimental.cardinality(train_ds))
 print("Number of validation samples: %d" % tf.data.experimental.cardinality(validation_ds))
