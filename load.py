@@ -8,15 +8,18 @@ label_to_index = {label: idx for idx, label in enumerate(LABELS)}
 
 # Load metadata CSV
 metadata = pd.read_csv("./IMA205-challenge/train_metadata.csv")
-# metadata columns: ID, label
 
-# Build list of (image_number, label_number) couples
+# Builds a list of couples in the form of : (image_number, label_number)
 couples = []
 for _, row in metadata.iterrows():
     img_name = row["ID"] # for instance it can be : "train_00000.png"
     img_number = int(img_name.split("_")[1].split(".")[0]) # for instance here it would be 0 (the integer)
     label_number = label_to_index[row["label"]]
     couples.append((img_number, label_number))
+
+# This is to verify it did not take the title row with "ID" and "LABEL"
+print(couples[0])
+print(couples[1])
 
 # Shuffling : we don't want bias between the split for the training and the split for the validation
 random.shuffle(couples)
