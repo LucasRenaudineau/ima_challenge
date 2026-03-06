@@ -19,3 +19,7 @@ I saw on a few tests that a machine looks like it added lines to the sides of th
 To choose the backbone, I took a look at this website : `https://keras.io/api/applications/`
 
 I then chose a relatively efficient model. I can be sure it was trained on image net with the parameter weights="imagenet" when importing the model.
+
+## Classifying layers
+
+(To do)
