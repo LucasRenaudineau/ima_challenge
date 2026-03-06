@@ -27,4 +27,5 @@ def print_first_in_dataset_augmented(dataset, n=9):
         print(f"Saved to {filename}")
         plt.close()
 
-print_first_in_dataset_augmented(train_ds,9)
+if __name__ == "__main__":
+    print_first_in_dataset_augmented(train_ds,9)
