@@ -18,11 +18,6 @@ for _, row in metadata.iterrows():
     label_index = label_to_index[row["label"]]
     couples.append((img_number, label_index))
 
-# This is to verify it did not take the title row with "ID" and "LABEL"
-print(couples[0])
-print(couples[1])
-print(couples[-1])
-
 # Shuffling : we don't want bias between the split for the training and the split for the validation
 random.shuffle(couples)
 
@@ -65,9 +60,17 @@ def print_first_in_dataset(dataset, n, filename="output.png"):
     print(f"Saved to {filename}")
     plt.close()
 
-print_first_in_dataset(train_ds, 4, "./outputs/train_preview.png")
-print_first_in_dataset(validation_ds, 4, "./outputs/validation_preview.png")
+if __name__ == "__main__":
+    print("hello world")
 
-print("Should adds up to 28901 :")
-print("Number of training samples:   %d" % tf.data.experimental.cardinality(train_ds))
-print("Number of validation samples: %d" % tf.data.experimental.cardinality(validation_ds))
+    # This is to verify it did not take the title row with "ID" and "LABEL"
+    print(couples[0])
+    print(couples[1])
+    print(couples[-1])
+    
+    print_first_in_dataset(train_ds, 4, "./outputs/train_preview.png")
+    print_first_in_dataset(validation_ds, 4, "./outputs/validation_preview.png")
+ 
+    print("Should adds up to 28901 :")
+    print("Number of training samples:   %d" % tf.data.experimental.cardinality(train_ds))
+    print("Number of validation samples: %d" % tf.data.experimental.cardinality(validation_ds))
