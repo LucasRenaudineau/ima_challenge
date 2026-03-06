@@ -12,3 +12,6 @@ ima205-challenge-2026.zip
 
 # Outputs
 outputs/**
+
+# Cache
+__pycache__/**
