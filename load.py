@@ -32,13 +32,18 @@ def load_image(img_number, label_index):
     path = tf.strings.join(["./IMA205-challenge/train/train_", num_str, ".png"])
     image = tf.io.read_file(path)
     image = tf.image.decode_png(image, channels=3)
+    image = tf.image.resize(image, [368,368])
     return image, label_index
 
-def make_dataset(couples): # this is just for adjusting to the required format for keras
+BATCH_SIZE = 32
+
+def make_dataset(couples): # this is just for adjusting to the required format for keras and make batches
     numbers = [c[0] for c in couples]
     labels  = [c[1] for c in couples]
     ds = tf.data.Dataset.from_tensor_slices((numbers, labels))
     ds = ds.map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
+    ds = ds.batch(BATCH_SIZE)
+    ds = ds.prefetch(tf.data.AUTOTUNE)
     return ds
 
 def print_couple(image, label):
