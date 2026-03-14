@@ -1,5 +1,8 @@
 from model import *
 
+# First, we train the model while freezing the base feature layers
+base_model.trainable = False
+
 model.compile(
     optimizer=keras.optimizers.Adam(),
     loss=keras.losses.BinaryCrossentropy(from_logits=True),

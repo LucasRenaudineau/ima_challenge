@@ -15,8 +15,6 @@ base_model = keras.applications.ResNet50V2(
     weights='imagenet',
     input_shape=(368, 368, 3),
     include_top=False)
-# Freeze base model
-base_model.trainable = False
 
 inputs = keras.Input(shape=(368, 368, 3))
 x = data_augmentation(inputs)
