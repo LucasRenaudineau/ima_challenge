@@ -5,8 +5,8 @@ import keras
 from load import *
  
 # Load the saved model
-model = keras.models.load_model("./outputs/model_final.keras")
-print("Model loaded from ./outputs/model_final.keras")
+model = keras.models.load_model("./outputs/model_phase1.keras")
+print("Model loaded from ./outputs/model_phase1.keras")
  
 # Build test dataset using the same load_image helper (dummy label 0)
 NUM_TEST_IMAGES = 9634

@@ -35,7 +35,7 @@ def load_image(img_number, label_index):
     image = tf.image.resize(image, [368,368])
     return image, label_index
 
-BATCH_SIZE = 256
+BATCH_SIZE = 64
 
 def make_dataset(couples): # this is just for adjusting to the required format for keras and make batches
     numbers = [c[0] for c in couples]
