@@ -10,8 +10,7 @@ from keras.layers import Input
 from load import *
 from data_augmentation import *
 
-# Small model for tests but we will increase its parameters later
-base_model = keras.applications.ResNet50V2(
+base_model = keras.applications.EfficientNetV2S( # looks like a reasonable size for good performances
     weights='imagenet',
     input_shape=(368, 368, 3),
     include_top=False)
