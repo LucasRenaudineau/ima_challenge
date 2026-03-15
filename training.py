@@ -27,8 +27,14 @@ model.compile(
     metrics=[keras.metrics.SparseCategoricalAccuracy()],
 )
 
+checkpoint_1 = keras.callbacks.ModelCheckpoint(
+    "./outputs/model_phase1.keras",
+    monitor='val_loss',
+    save_best_only=True,
+)
+
 epochs = 1
-history_1 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds)
+history_1 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds, callbacks=[checkpoint_1])
 
 # Save model after initial training (frozen base)
 model.save("./outputs/model_phase1.keras")
@@ -47,8 +53,15 @@ model.compile(
     metrics=[keras.metrics.SparseCategoricalAccuracy()],
 )
 
+
+checkpoint_2 = keras.callbacks.ModelCheckpoint(
+    "./outputs/model_phase2.keras",
+    monitor='val_loss',
+    save_best_only=True,
+)
+
 epochs = 1
-history_2 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds)
+history_2 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds, callbacks=[checkpoint_2])
 
 x_train = list(map(lambda x: x[0], train_ds))
 y_train = list(map(lambda x: x[1], train_ds))
