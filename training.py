@@ -22,12 +22,18 @@ def plot_history(history):
 # First, we train the model while freezing the base feature layers
 with strategy.scope():
     from model import *
+    # Class weights to handle imbalance
+    counts = [13015, 8101, 2746, 2012, 861, 441, 415, 391, 366, 360, 114, 68, 11]
+    total = sum(counts)
+    num_classes = len(LABELS)
+    class_weights = {i: total / (num_classes * count) for i, count in enumerate(counts)}
     base_model.trainable = False
     
     model.compile(
         optimizer=keras.optimizers.Adam(),
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=[keras.metrics.SparseCategoricalAccuracy()],
+        class_weights=class_weights
     )
     
     checkpoint_1 = keras.callbacks.ModelCheckpoint(
@@ -54,6 +60,7 @@ with strategy.scope():
         optimizer=keras.optimizers.Adam(1e-5),  # Low learning rate
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=[keras.metrics.SparseCategoricalAccuracy()],
+        class_weights=class_weights
     )
     
     
