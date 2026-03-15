@@ -1,3 +1,12 @@
+#import os
+#os.environ["TF_CUDNN_USE_FRONTEND"] = "0"
+#os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+
+#import tensorflow as tf
+#gpus = tf.config.list_physical_devices('GPU')
+#for gpu in gpus:
+    #tf.config.experimental.set_memory_growth(gpu,True)
+
 from model import *
 
 # First, we train the model while freezing the base feature layers
@@ -9,7 +18,7 @@ model.compile(
     metrics=[keras.metrics.SparseCategoricalAccuracy()],
 )
 
-epochs = 10
+epochs = 1
 model.fit(train_ds, epochs=epochs, validation_data=validation_ds)
 
 # Save model after initial training (frozen base)
@@ -23,11 +32,11 @@ model.summary()
 
 model.compile(
     optimizer=keras.optimizers.Adam(1e-5),  # Low learning rate
-    loss=keras.losses.BinaryCrossentropy(from_logits=True),
-    metrics=[keras.metrics.BinaryAccuracy()],
+    loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=[keras.metrics.SparseCategoricalAccuracy()],
 )
 
-epochs = 5
+epochs = 1
 model.fit(train_ds, epochs=epochs, validation_data=validation_ds)
 
 x_train = list(map(lambda x: x[0], train_ds))
