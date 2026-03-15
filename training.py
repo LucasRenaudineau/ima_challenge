@@ -7,6 +7,7 @@
 #for gpu in gpus:
     #tf.config.experimental.set_memory_growth(gpu,True)
 
+import tensorflow as tf
 strategy = tf.distribute.MirroredStrategy() # I can have access to 2 CPUs
 
 def plot_history(history):
@@ -50,7 +51,7 @@ with strategy.scope():
     model.summary()
     
     model.compile(
-        optimizer=keras.optimizers.Adam(1e-3),  # Low learning rate
+        optimizer=keras.optimizers.Adam(1e-5),  # Low learning rate
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=[keras.metrics.SparseCategoricalAccuracy()],
     )
@@ -64,11 +65,6 @@ with strategy.scope():
     
     epochs = 1
     history_2 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds, callbacks=[checkpoint_2])
-    
-    x_train = list(map(lambda x: x[0], train_ds))
-    y_train = list(map(lambda x: x[1], train_ds))
-    x_validation = list(map(lambda x: x[0], validation_ds))
-    y_validation = list(map(lambda x: x[1], validation_ds))
     
     # Save model after it was unfrozen
     model.save("./outputs/model_phase2.keras")
