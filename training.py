@@ -33,7 +33,6 @@ with strategy.scope():
         optimizer=keras.optimizers.Adam(),
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=[keras.metrics.SparseCategoricalAccuracy()],
-        class_weights=class_weights
     )
     
     checkpoint_1 = keras.callbacks.ModelCheckpoint(
@@ -43,7 +42,7 @@ with strategy.scope():
     )
     
     epochs = 1
-    history_1 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds, callbacks=[checkpoint_1])
+    history_1 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds, callbacks=[checkpoint_1], class_weight = class_weights)
     
     # Save model after initial training (frozen base)
     model.save("./outputs/model_phase1.keras")
@@ -60,7 +59,6 @@ with strategy.scope():
         optimizer=keras.optimizers.Adam(1e-5),  # Low learning rate
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=[keras.metrics.SparseCategoricalAccuracy()],
-        class_weights=class_weights
     )
     
     
@@ -71,7 +69,7 @@ with strategy.scope():
     )
     
     epochs = 1
-    history_2 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds, callbacks=[checkpoint_2])
+    history_2 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds, callbacks=[checkpoint_2], class_weight = class_weights)
     
     # Save model after it was unfrozen
     model.save("./outputs/model_phase2.keras")
