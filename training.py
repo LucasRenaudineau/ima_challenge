@@ -8,7 +8,7 @@
     #tf.config.experimental.set_memory_growth(gpu,True)
 
 import tensorflow as tf
-strategy = tf.distribute.MirroredStrategy() # I can have access to 2 CPUs
+strategy = tf.distribute.MirroredStrategy() # I can have access to 2 GPUs
 
 def plot_history(history):
     plt.plot(history.history['loss'], label='train loss')
