@@ -38,8 +38,7 @@ print(f"Predicted {len(couples)} images.")
 
 # This is what is said in the section about data on the kaggle
 
-rows = [{"ID": f"test_{str(img_number).zfill(5)}", "label": LABELS[class_index]}
-        for img_number, class_index in couples]
+rows = [{"ID": f"test_{str(img_number).zfill(5)}.png", "label": LABELS[class_index]} for img_number, class_index in couples]
 
 df = pd.DataFrame(rows, columns=["ID", "label"])
 output_path = "./outputs/predictions.csv"
