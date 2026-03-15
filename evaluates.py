@@ -25,11 +25,22 @@ for i, (images, _) in enumerate(test_ds):
  
 print(f"Predicted {len(couples)} images.")
  
-# Build and save CSV
-rows = [{"": img_number, "ID": f"test_{str(img_number).zfill(5)}.png", "label": LABELS[class_index]}
+# This is the code to match the sample_submission.csv file (that is not correct !)
+
+## Build and save CSV
+#rows = [{"": img_number, "ID": f"test_{str(img_number).zfill(5)}.png", "label": LABELS[class_index]}
+#        for img_number, class_index in couples]
+# 
+#df = pd.DataFrame(rows, columns=["", "ID", "label"])
+#output_path = "./outputs/predictions.csv"
+#df.to_csv(output_path, index=False)
+#print(f"Predictions saved to {output_path}")
+
+# This is what is said in the section about data on the kaggle
+
+rows = [{"ID": f"test_{str(img_number).zfill(5)}", "label": LABELS[class_index]}
         for img_number, class_index in couples]
- 
-df = pd.DataFrame(rows, columns=["", "ID", "label"])
+
+df = pd.DataFrame(rows, columns=["ID", "label"])
 output_path = "./outputs/predictions.csv"
 df.to_csv(output_path, index=False)
-print(f"Predictions saved to {output_path}")
