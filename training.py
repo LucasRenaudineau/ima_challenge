@@ -9,6 +9,15 @@
 
 from model import *
 
+def plot_history(history):
+    plt.plot(history.history['loss'], label='train loss')
+    plt.plot(history.history['val_loss'], label='val loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.savefig('./outputs/loss_curve.png')
+    plt.close()
+
 # First, we train the model while freezing the base feature layers
 base_model.trainable = False
 
@@ -19,11 +28,13 @@ model.compile(
 )
 
 epochs = 1
-model.fit(train_ds, epochs=epochs, validation_data=validation_ds)
+history_1 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds)
 
 # Save model after initial training (frozen base)
 model.save("./outputs/model_phase1.keras")
 print("Phase 1 model saved to ./outputs/model_phase1.keras")
+
+plot_history(history_1)
 
 # Now we unfreeze the base layers
 
@@ -37,7 +48,7 @@ model.compile(
 )
 
 epochs = 1
-model.fit(train_ds, epochs=epochs, validation_data=validation_ds)
+history_2 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds)
 
 x_train = list(map(lambda x: x[0], train_ds))
 y_train = list(map(lambda x: x[1], train_ds))
@@ -47,3 +58,8 @@ y_validation = list(map(lambda x: x[1], validation_ds))
 # Save model after it was unfrozen
 model.save("./outputs/model_phase2.keras")
 print("Phase 2 model saved to ./outputs/model_phase1.keras")
+
+print("Evolution of accuracy before unfreezing :")
+plot_history(history_1)
+print("Evolution of accuracy after unfreezing :")
+plot_history(history_2)
