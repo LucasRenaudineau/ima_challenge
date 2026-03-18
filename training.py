@@ -51,10 +51,10 @@ def train_one_epoch(model, epoch,frozen:bool):
 if __name__ == "__main__":
     # Phase 1 of training (with frozen base)
     with strategy.scope():
-        model = model.load("./outputs/model_not_trained.keras")
+        model = keras.models.load_model("./outputs/model_not_trained.keras")
         for epoch in range(10):
             train_one_epoch(model, epoch, True)
     # Phase 2 of training (with unfrozen base)
-        model = model.load("./outputs/model_phase1_epoch6.keras") # Take the best model on the validation test !!
+        model = keras.models.load_model("./outputs/model_phase1_epoch6.keras") # Take the best model on the validation test !!
         for epoch in range(5):
             train_one_epoch(model,epoch, False)
