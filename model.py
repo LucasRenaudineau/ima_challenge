@@ -11,7 +11,7 @@ from load import *
 from data_augmentation import *
 
 if __name__ == "__main__":
-    base_model = keras.applications.EfficientNetV2S( # looks like a reasonable size for good performances
+    base_model = keras.applications.EfficientNetB2( # looks like a reasonable size for good performances
         weights='imagenet',
         input_shape=(368, 368, 3),
         include_top=False)
