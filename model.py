@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
+import keras
 from keras.layers import Dense, Activation
 from keras.models import Sequential
 from keras.layers import BatchNormalization
