@@ -1,5 +1,5 @@
 # Libraries
-from tensorflow import keras
+import keras
 from tensorflow.keras import layers
 import numpy as np
 
