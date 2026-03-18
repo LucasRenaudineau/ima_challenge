@@ -1,13 +1,10 @@
 #import os
 #os.environ["TF_CUDNN_USE_FRONTEND"] = "0"
 #os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
-
-#import tensorflow as tf
-#gpus = tf.config.list_physical_devices('GPU')
-#for gpu in gpus:
-    #tf.config.experimental.set_memory_growth(gpu,True)
-
+from load import *
 import tensorflow as tf
+from model import *
+
 strategy = tf.distribute.MirroredStrategy() # I can have access to 2 GPUs
 
 def plot_history(history):
@@ -20,62 +17,44 @@ def plot_history(history):
     plt.close()
 
 # First, we train the model while freezing the base feature layers
-with strategy.scope():
-    from model import *
+#with strategy.scope():
+
+def train_one_epoch(model, epoch,frozen:bool):
     # Class weights to handle imbalance
     counts = [13015, 8101, 2746, 2012, 861, 441, 415, 391, 366, 360, 114, 68, 11]
     total = sum(counts)
     num_classes = len(LABELS)
     class_weights = {i: total / (num_classes * count) for i, count in enumerate(counts)}
-    base_model.trainable = False
-    
+    if frozen:
+        base_model.trainable = False
+    else:
+        base_model.trainable = True
+
     model.compile(
-        optimizer=keras.optimizers.Adam(),
-        loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-        metrics=[keras.metrics.SparseCategoricalAccuracy()],
-    )
-    
-    checkpoint_1 = keras.callbacks.ModelCheckpoint(
-        "./outputs/model_phase1.keras",
-        monitor='val_loss',
-        save_best_only=True,
-    )
-    
-    epochs = 1
-    history_1 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds, callbacks=[checkpoint_1], class_weight = class_weights)
-    
+            optimizer=keras.optimizers.Adam(),
+            loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+            metrics=[keras.metrics.SparseCategoricalAccuracy()],
+            )
+
+
+    model.fit(train_ds, epochs=1, validation_data=validation_ds, class_weight = class_weights)
+
     # Save model after initial training (frozen base)
-    model.save("./outputs/model_phase1.keras")
-    print("Phase 1 model saved to ./outputs/model_phase1.keras")
-    
-    plot_history(history_1)
-    
-    # Now we unfreeze the base layers
-    
-    base_model.trainable = True
-    model.summary()
-    
-    model.compile(
-        optimizer=keras.optimizers.Adam(1e-5),  # Low learning rate
-        loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-        metrics=[keras.metrics.SparseCategoricalAccuracy()],
-    )
-    
-    
-    checkpoint_2 = keras.callbacks.ModelCheckpoint(
-        "./outputs/model_phase2.keras",
-        monitor='val_loss',
-        save_best_only=True,
-    )
-    
-    epochs = 1
-    history_2 = model.fit(train_ds, epochs=epochs, validation_data=validation_ds, callbacks=[checkpoint_2], class_weight = class_weights)
-    
-    # Save model after it was unfrozen
-    model.save("./outputs/model_phase2.keras")
-    print("Phase 2 model saved to ./outputs/model_phase1.keras")
-    
-    print("Evolution of accuracy before unfreezing :")
-    plot_history(history_1)
-    print("Evolution of accuracy after unfreezing :")
-    plot_history(history_2)
+    print(f"{epoch}-th epoch is finished.")
+    if frozen:
+        model.save(f"./outputs/model_phase1_epoch{epoch}.keras")
+        print(f"Phase 1 model saved to ./outputs/model_phase1_epoch{epoch}.keras")
+    else:
+        model.save(f"./outputs/model_phase2_epoch{epoch}.keras")
+        print(f"Phase 2 model saved to ./outputs/model_phase2_epoch{epoch}.keras")
+
+if __name__ == "__main__":
+    # Phase 1 of training (with frozen base)
+    with strategy.scope():
+        model = model.load("./outputs/model_not_trained.keras")
+        for epoch in range(10):
+            train_one_epoch(model, epoch, True)
+    # Phase 2 of training (with unfrozen base)
+        model = model.load("./outputs/model_phase1_epoch6.keras") # Take the best model on the validation test !!
+        for epoch in range(5):
+            train_one_epoch(model,epoch, False)
