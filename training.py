@@ -4,6 +4,7 @@
 from load import *
 import tensorflow as tf
 from model import *
+import keras
 
 strategy = tf.distribute.MirroredStrategy() # I can have access to 2 GPUs
 
@@ -25,10 +26,9 @@ def train_one_epoch(model, epoch,frozen:bool):
     total = sum(counts)
     num_classes = len(LABELS)
     class_weights = {i: total / (num_classes * count) for i, count in enumerate(counts)}
-    if frozen:
-        base_model.trainable = False
-    else:
-        base_model.trainable = True
+
+    efficientnet_layer = model.get_layer("efficientnetb2")
+    efficientnet_layer.trainable = not frozen
 
     model.compile(
             optimizer=keras.optimizers.Adam(),
