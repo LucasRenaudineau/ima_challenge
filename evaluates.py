@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import keras
-from sklearn.metrics import f1_score
  
 from load import *
  
@@ -49,13 +48,13 @@ if __name__ == "__main__":
         print(f"Model loaded from ./outputs/model_phase1_epoch{epoch}.keras")
         model = keras.models.load_model(f"./outputs/model_phase1_epoch{epoch}.keras")
         couples = build_predictions(model)
-        print(compute_f1(model))
+        #print(compute_f1(model))
         print("-------------------")
     for epoch in range(5):
         print(f"Model loaded from ./outputs/model_phase2_epoch{epoch}.keras")
         model = keras.models.load_model(f"./outputs/model_phase2_epoch{epoch}.keras")
         couples = build_predictions(model)
-        print(compute_f1(model))
+        #print(compute_f1(model))
         print("-------------------")
     #model = keras.models.load_model("./outputs/model_phase2_epoch3.keras")
     #couples ) build_predictions(model)
