@@ -13,9 +13,11 @@ test_ds = test_ds.map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
 test_ds = test_ds.batch(32).prefetch(tf.data.AUTOTUNE)
  
 # Run predictions and build couples list : (image_number, class_index)
-def build_predictions(model):
+def build_predictions(model, ds=None):
+    if ds is None:
+        ds = test_ds
     couples = []
-    for i, (images, _) in enumerate(test_ds):
+    for i, (images, _) in enumerate(ds):
         logits = model.predict_on_batch(images)
         predicted_classes = np.argmax(logits, axis=1)
         for j, class_index in enumerate(predicted_classes):
@@ -23,16 +25,20 @@ def build_predictions(model):
      
     print(f"Predicted {len(couples)} images.")
     return couples
-
-def compute_f1(model):
+ 
+ 
+def compute_f1(couples, ds):
+    y_pred = [class_index for _, class_index in sorted(couples, key=lambda x: x[0])]
     y_true = []
-    y_pred = []
-    for images, labels in validation_ds:
-        logits = model.predict_on_batch(images)
-        predicted_classes = np.argmax(logits, axis=1)
+    for _, labels in ds:
         y_true.extend(labels.numpy().tolist())
-        y_pred.extend(predicted_classes.tolist())
-    
+ 
+    if len(y_true) != len(y_pred):
+        raise ValueError(
+            f"Length mismatch: {len(y_true)} true labels vs {len(y_pred)} predictions. "
+            "couples must be built using the same dataset passed as ds."
+        )
+ 
     score = f1_score(y_true, y_pred, average="macro")
     print(f"Macro-averaged F1 score: {score:.4f}")
     return score
@@ -48,14 +54,14 @@ if __name__ == "__main__":
     for epoch in range(10):
         print(f"Model loaded from ./outputs/model_phase1_epoch{epoch}.keras")
         model = keras.models.load_model(f"./outputs/model_phase1_epoch{epoch}.keras")
-        couples = build_predictions(model)
-        print(compute_f1(model))
+        val_couples = build_predictions(model, validation_ds)
+        print(compute_f1(val_couples, validation_ds))
         print("-------------------")
     for epoch in range(5):
         print(f"Model loaded from ./outputs/model_phase2_epoch{epoch}.keras")
         model = keras.models.load_model(f"./outputs/model_phase2_epoch{epoch}.keras")
-        couples = build_predictions(model)
-        print(compute_f1(model))
+        val_couples = build_predictions(model, validation_ds)
+        print(compute_f1(val_couples, validation_ds))
         print("-------------------")
     #model = keras.models.load_model("./outputs/model_phase2_epoch3.keras")
     #couples ) build_predictions(model)
