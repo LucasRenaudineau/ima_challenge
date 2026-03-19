@@ -16,13 +16,9 @@ test_ds = test_ds.batch(32).prefetch(tf.data.AUTOTUNE)
 def build_predictions(model, ds=None):
     if ds is None:
         ds = test_ds
-    couples = []
-    for i, (images, _) in enumerate(ds):
-        logits = model.predict_on_batch(images)
-        predicted_classes = np.argmax(logits, axis=1)
-        for j, class_index in enumerate(predicted_classes):
-            couples.append((i * 32 + j, int(class_index)))
-     
+    logits = model.predict(ds)
+    predicted_classes = np.argmax(logits, axis=1)
+    couples = [(i, int(c)) for i, c in enumerate(predicted_classes)]
     print(f"Predicted {len(couples)} images.")
     return couples
  
