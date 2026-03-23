@@ -45,6 +45,7 @@ def train_one_epoch(model, epoch,frozen:bool):
         metrics=[
             keras.metrics.SparseCategoricalAccuracy(name="accuracy"),
         ]
+    )
     model.fit(train_ds, epochs=1, validation_data=validation_ds, callbacks=[MacroF1Callback()])
 
     # Save model after initial training (frozen base)
