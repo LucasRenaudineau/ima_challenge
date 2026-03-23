@@ -54,12 +54,18 @@ def print_couple(image, label):
     plt.axis("off")
 
 def print_first_in_dataset(dataset, n, filename="output.png"):
-    plt.figure(figsize=(10, 10))
-    for i, (image, label_index) in enumerate(dataset.take(n)):
-        ax = plt.subplot(2, 2, i + 1)
-        plt.imshow(image.numpy())
-        plt.title(LABELS[int(label_index)])
-        plt.axis("off")
+    i = 0
+    for image_batch, label_batch in dataset.take(-1):  # iterate over batches
+        for image, label_index in zip(image_batch, label_batch):  # iterate within batch
+            if i >= n:
+                break
+            ax = plt.subplot(2, 2, i + 1)
+            plt.imshow(image.numpy().astype("uint8"))
+            plt.title(LABELS[int(label_index)])
+            plt.axis("off")
+            i += 1
+        if i >= n:
+            break
     plt.savefig(filename)
     print(f"Saved to {filename}")
     plt.close()
