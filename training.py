@@ -4,6 +4,7 @@
 from load import *
 import tensorflow as tf
 from model import *
+from evaluates import *
 import keras
 
 strategy = tf.distribute.MirroredStrategy() # I can have access to 2 GPUs
