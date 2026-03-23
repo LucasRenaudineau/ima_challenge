@@ -22,15 +22,15 @@ def plot_history(history):
 
 def train_one_epoch(model, epoch,frozen:bool):
     # Class weights to handle imbalance
-    counts = [13015, 8101, 2746, 2012, 861, 441, 415, 391, 366, 360, 114, 68, 11]
-    total = sum(counts)
+    # counts = [13015, 8101, 2746, 2012, 861, 441, 415, 391, 366, 360, 114, 68, 11]
+    # total = sum(counts)
     num_classes = len(LABELS)
-    class_weights = {i: total / (num_classes * count) for i, count in enumerate(counts)}
+    # class_weights = {i: total / (num_classes * count) for i, count in enumerate(counts)}
 
     efficientnet_layer = model.get_layer("efficientnetb2")
     efficientnet_layer.trainable = not frozen
 
-    model.fit(train_ds, epochs=1, validation_data=validation_ds, class_weight = class_weights)
+    model.fit(train_ds, epochs=1, validation_data=validation_ds)
 
     # Save model after initial training (frozen base)
     print(f"{epoch}-th epoch is finished.")
