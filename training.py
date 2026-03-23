@@ -38,6 +38,13 @@ def train_one_epoch(model, epoch,frozen:bool):
     efficientnet_layer = model.get_layer("efficientnetb2")
     efficientnet_layer.trainable = not frozen
 
+
+    model.compile(
+        optimizer=keras.optimizers.Adam(learning_rate = 1e-4),
+        loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+        metrics=[
+            keras.metrics.SparseCategoricalAccuracy(name="accuracy"),
+        ]
     model.fit(train_ds, epochs=1, validation_data=validation_ds, callbacks=[MacroF1Callback()])
 
     # Save model after initial training (frozen base)
@@ -51,6 +58,8 @@ def train_one_epoch(model, epoch,frozen:bool):
 
 if __name__ == "__main__":
     with strategy.scope():
+        # Loading data INSIDE STRATEGY.SCOPE
+        train_ds, validation_ds = load_data()
         # Phase 1 of training (with frozen base)
         model = keras.models.load_model("./outputs/model_not_trained.keras")
 
