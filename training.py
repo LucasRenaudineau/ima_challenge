@@ -17,6 +17,13 @@ def plot_history(history):
     plt.savefig('./outputs/loss_curve.png')
     plt.close()
 
+class MacroF1Callback(keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        couples = build_predictions(self.model, validation_ds)
+        score = compute_f1(couples, validation_ds)
+        logs["val_macro_f1"] = score
+        print(f"\nEpoch {epoch} — val macro F1: {score:.4f}")
+
 # First, we train the model while freezing the base feature layers
 #with strategy.scope():
 
@@ -30,7 +37,7 @@ def train_one_epoch(model, epoch,frozen:bool):
     efficientnet_layer = model.get_layer("efficientnetb2")
     efficientnet_layer.trainable = not frozen
 
-    model.fit(train_ds, epochs=1, validation_data=validation_ds)
+    model.fit(train_ds, epochs=1, validation_data=validation_ds, callbacks=[MacroF1Callback()])
 
     # Save model after initial training (frozen base)
     print(f"{epoch}-th epoch is finished.")
@@ -49,7 +56,10 @@ if __name__ == "__main__":
         model.compile(
             optimizer=keras.optimizers.Adam(),
             loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-            metrics=[keras.metrics.SparseCategoricalAccuracy()],
+            metrics=[
+                keras.metrics.SparseCategoricalAccuracy(name="accuracy"),
+                keras.metrics.MeanIoU(num_classes=13, name="mean_iou"),
+    ]
         )
         for epoch in range(10):
             train_one_epoch(model, epoch, True)
