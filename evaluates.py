@@ -47,19 +47,20 @@ def save_csv(couples, name:str):
     df.to_csv(output_path, index=False)
 
 if __name__ == "__main__":
-    for epoch in range(10):
-        print(f"Model loaded from ./outputs/model_phase1_epoch{epoch}.keras")
-        model = keras.models.load_model(f"./outputs/model_phase1_epoch{epoch}.keras")
-        val_couples = build_predictions(model, validation_ds)
-        print(compute_f1(val_couples, validation_ds))
-        print("-------------------")
-    for epoch in range(5):
-        print(f"Model loaded from ./outputs/model_phase2_epoch{epoch}.keras")
-        model = keras.models.load_model(f"./outputs/model_phase2_epoch{epoch}.keras")
-        val_couples = build_predictions(model, validation_ds)
-        print(compute_f1(val_couples, validation_ds))
-        print("-------------------")
-    #model = keras.models.load_model("./outputs/model_phase2_epoch3.keras")
-    #couples ) build_predictions(model)
-    #save_csv(couples, predictions)
+    test_ds, validation_ds = load_data()
+#    for epoch in range(10):
+#        print(f"Model loaded from ./outputs/model_phase1_epoch{epoch}.keras")
+#        model = keras.models.load_model(f"./outputs/model_phase1_epoch{epoch}.keras")
+#        val_couples = build_predictions(model, validation_ds)
+#        print(compute_f1(val_couples, validation_ds))
+#        print("-------------------")
+#    for epoch in range(5):
+#        print(f"Model loaded from ./outputs/model_phase2_epoch{epoch}.keras")
+#        model = keras.models.load_model(f"./outputs/model_phase2_epoch{epoch}.keras")
+#        val_couples = build_predictions(model, validation_ds)
+#        print(compute_f1(val_couples, validation_ds))
+#        print("-------------------")
+    model = keras.models.load_model("./outputs/model_phase2_epoch1.keras")
+    couples = build_predictions(model)
+    save_csv(couples, "predictions_0_58")
 
