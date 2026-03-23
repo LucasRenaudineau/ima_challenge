@@ -58,7 +58,6 @@ if __name__ == "__main__":
             loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
             metrics=[
                 keras.metrics.SparseCategoricalAccuracy(name="accuracy"),
-                keras.metrics.MeanIoU(num_classes=13, name="mean_iou"),
     ]
         )
         for epoch in range(10):
