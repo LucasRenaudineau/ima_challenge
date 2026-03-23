@@ -2,6 +2,7 @@ import tensorflow as tf
 import pandas as pd
 import random
 import matplotlib.pyplot as plt
+from collections import defaultdict
 
 # List of labels
 LABELS = ["SNE", "LY", "MO", "EO", "BA", "VLY", "BNE", "MMY", "MY", "PMY", "BL", "PC", "PLY"]
@@ -25,6 +26,28 @@ random.shuffle(couples)
 split_idx = int(len(couples) * 0.8)
 train_couples = couples[:split_idx]
 validation_couples   = couples[split_idx:]
+
+def oversample(couples):
+    # Group by class
+    by_class = defaultdict(list)
+    for img_number, label_index in couples:
+        by_class[label_index].append((img_number, label_index))
+ 
+    max_count = max(len(v) for v in by_class.values())
+ 
+    print("Oversampling training set:")
+    oversampled = []
+    for label_index, samples in sorted(by_class.items()):
+        # Repeat the list as many times as needed, then trim to max_count
+        repeated = (samples * (max_count // len(samples) + 1))[:max_count]
+        print(f"  {LABELS[label_index]:>4s}: {len(samples):>5d} → {len(repeated)}")
+        oversampled.extend(repeated)
+ 
+    random.shuffle(oversampled)
+    return oversampled
+ 
+ 
+train_couples_oversampled = oversample(train_couples)
 
 # Helper: for the make_dataset function
 def load_image(img_number, label_index):
@@ -51,7 +74,7 @@ def print_couple(image, label):
     plt.title(int(label))
     plt.axis("off")
 
-train_ds      = make_dataset(train_couples)
+train_ds      = make_dataset(train_couples_oversampled)
 validation_ds = make_dataset(validation_couples)
 
 def print_first_in_dataset(dataset, n, filename="output.png"):
