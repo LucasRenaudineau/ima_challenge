@@ -66,12 +66,6 @@ def print_first_in_dataset(dataset, n, filename="output.png"):
 
 def load_data():
 
-
-    # This is to verify it did not take the title row with "ID" and "LABEL"
-    print(couples[0])
-    print(couples[1])
-    print(couples[-1])
-    
     # Load metadata CSV
     metadata = pd.read_csv("./IMA205-challenge/train_metadata.csv")
     
@@ -82,6 +76,12 @@ def load_data():
         img_number = int(img_name.split("_")[1].split(".")[0]) # for instance here it would be 0 (the integer)
         label_index = label_to_index[row["label"]]
         couples.append((img_number, label_index))
+
+
+    # This is to verify it did not take the title row with "ID" and "LABEL"
+    print(couples[0])
+    print(couples[1])
+    print(couples[-1])
     
     # Shuffling : we don't want bias between the split for the training and the split for the validation
     random.shuffle(couples)
@@ -92,7 +92,7 @@ def load_data():
     validation_couples   = couples[split_idx:]
     train_couples_oversampled = oversample(train_couples)
     # train_ds = make_dataset(train_couples_oversampled) # commented for the moment
-    train_ds = train_couples
+    train_ds = make_dataset(train_couples)
     validation_ds = make_dataset(validation_couples)
     return train_ds, validation_ds
 
