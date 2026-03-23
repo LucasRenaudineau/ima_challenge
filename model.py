@@ -10,7 +10,7 @@ from keras.layers import Input
 from load import *
 from data_augmentation import *
 
-if __name__ == "__main__":
+def save_base_model():
     base_model = keras.applications.EfficientNetB2( # looks like a reasonable size for good performances
         weights='imagenet',
         input_shape=(368, 368, 3),
@@ -29,3 +29,6 @@ if __name__ == "__main__":
     model.summary()
     
     model.save("./outputs/model_not_trained.keras")
+
+if __name__ == "__main__":
+    save_base_model()
