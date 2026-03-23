@@ -4,29 +4,6 @@ import random
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
-# List of labels
-LABELS = ["SNE", "LY", "MO", "EO", "BA", "VLY", "BNE", "MMY", "MY", "PMY", "BL", "PC", "PLY"]
-label_to_index = {label: idx for idx, label in enumerate(LABELS)}
-
-# Load metadata CSV
-metadata = pd.read_csv("./IMA205-challenge/train_metadata.csv")
-
-# Builds a list of couples in the form of : (image_number, label_index)
-couples = []
-for _, row in metadata.iterrows():
-    img_name = row["ID"] # for instance it can be : "train_00000.png"
-    img_number = int(img_name.split("_")[1].split(".")[0]) # for instance here it would be 0 (the integer)
-    label_index = label_to_index[row["label"]]
-    couples.append((img_number, label_index))
-
-# Shuffling : we don't want bias between the split for the training and the split for the validation
-random.shuffle(couples)
-
-# Split 80/20 (rule of thumb)
-split_idx = int(len(couples) * 0.8)
-train_couples = couples[:split_idx]
-validation_couples   = couples[split_idx:]
-
 def oversample(couples):
     # Group by class
     by_class = defaultdict(list)
@@ -46,9 +23,6 @@ def oversample(couples):
     random.shuffle(oversampled)
     return oversampled
  
- 
-train_couples_oversampled = oversample(train_couples)
-
 # Helper: for the make_dataset function
 def load_image(img_number, label_index):
     num_str = tf.strings.as_string(img_number, width=5, fill='0')
@@ -74,9 +48,6 @@ def print_couple(image, label):
     plt.title(int(label))
     plt.axis("off")
 
-train_ds      = make_dataset(train_couples_oversampled)
-validation_ds = make_dataset(validation_couples)
-
 def print_first_in_dataset(dataset, n, filename="output.png"):
     plt.figure(figsize=(10, 10))
     for i, (image, label_index) in enumerate(dataset.take(n)):
@@ -87,6 +58,36 @@ def print_first_in_dataset(dataset, n, filename="output.png"):
     plt.savefig(filename)
     print(f"Saved to {filename}")
     plt.close()
+
+def load_data():
+
+    # List of labels
+    LABELS = ["SNE", "LY", "MO", "EO", "BA", "VLY", "BNE", "MMY", "MY", "PMY", "BL", "PC", "PLY"]
+    label_to_index = {label: idx for idx, label in enumerate(LABELS)}
+    
+    # Load metadata CSV
+    metadata = pd.read_csv("./IMA205-challenge/train_metadata.csv")
+    
+    # Builds a list of couples in the form of : (image_number, label_index)
+    couples = []
+    for _, row in metadata.iterrows():
+        img_name = row["ID"] # for instance it can be : "train_00000.png"
+        img_number = int(img_name.split("_")[1].split(".")[0]) # for instance here it would be 0 (the integer)
+        label_index = label_to_index[row["label"]]
+        couples.append((img_number, label_index))
+    
+    # Shuffling : we don't want bias between the split for the training and the split for the validation
+    random.shuffle(couples)
+    
+    # Split 80/20 (rule of thumb)
+    split_idx = int(len(couples) * 0.8)
+    train_couples = couples[:split_idx]
+    validation_couples   = couples[split_idx:]
+    train_couples_oversampled = oversample(train_couples)
+    # train_ds = make_dataset(train_couples_oversampled) # commented for the moment
+    train_ds = train_couples
+    validation_ds = make_dataset(validation_couples)
+    return train_ds, validation_ds
 
 if __name__ == "__main__":
     print("hello world")
