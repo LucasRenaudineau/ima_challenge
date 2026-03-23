@@ -47,7 +47,6 @@ def save_csv(couples, name:str):
     df.to_csv(output_path, index=False)
 
 if __name__ == "__main__":
-    test_ds, validation_ds = load_data()
 #    for epoch in range(10):
 #        print(f"Model loaded from ./outputs/model_phase1_epoch{epoch}.keras")
 #        model = keras.models.load_model(f"./outputs/model_phase1_epoch{epoch}.keras")
@@ -61,6 +60,6 @@ if __name__ == "__main__":
 #        print(compute_f1(val_couples, validation_ds))
 #        print("-------------------")
     model = keras.models.load_model("./outputs/model_phase2_epoch1.keras")
-    couples = build_predictions(model)
+    couples = build_predictions(model, ds=test_ds)
     save_csv(couples, "predictions_0_58")
 
