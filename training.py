@@ -30,13 +30,6 @@ def train_one_epoch(model, epoch,frozen:bool):
     efficientnet_layer = model.get_layer("efficientnetb2")
     efficientnet_layer.trainable = not frozen
 
-    model.compile(
-            optimizer=keras.optimizers.Adam(),
-            loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-            metrics=[keras.metrics.SparseCategoricalAccuracy()],
-            )
-
-
     model.fit(train_ds, epochs=1, validation_data=validation_ds, class_weight = class_weights)
 
     # Save model after initial training (frozen base)
@@ -49,12 +42,18 @@ def train_one_epoch(model, epoch,frozen:bool):
         print(f"Phase 2 model saved to ./outputs/model_phase2_epoch{epoch}.keras")
 
 if __name__ == "__main__":
-    # Phase 1 of training (with frozen base)
     with strategy.scope():
+        # Phase 1 of training (with frozen base)
         model = keras.models.load_model("./outputs/model_not_trained.keras")
+
+        model.compile(
+            optimizer=keras.optimizers.Adam(),
+            loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+            metrics=[keras.metrics.SparseCategoricalAccuracy()],
+        )
         for epoch in range(10):
             train_one_epoch(model, epoch, True)
-    # Phase 2 of training (with unfrozen base)
+        # Phase 2 of training (with unfrozen base)
         model = keras.models.load_model("./outputs/model_phase1_epoch6.keras") # Take the best model on the validation test !!
         for epoch in range(5):
             train_one_epoch(model,epoch, False)
