@@ -62,6 +62,7 @@ if __name__ == "__main__":
         # Loading data INSIDE STRATEGY.SCOPE
         train_ds, validation_ds = load_data()
         # Phase 1 of training (with frozen base)
+        save_base_model()
         model = keras.models.load_model("./outputs/model_not_trained.keras")
 
         model.compile(
