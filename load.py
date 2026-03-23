@@ -66,6 +66,11 @@ def print_first_in_dataset(dataset, n, filename="output.png"):
 
 def load_data():
 
+
+    # This is to verify it did not take the title row with "ID" and "LABEL"
+    print(couples[0])
+    print(couples[1])
+    print(couples[-1])
     
     # Load metadata CSV
     metadata = pd.read_csv("./IMA205-challenge/train_metadata.csv")
@@ -94,10 +99,7 @@ def load_data():
 if __name__ == "__main__":
     print("hello world")
 
-    # This is to verify it did not take the title row with "ID" and "LABEL"
-    print(couples[0])
-    print(couples[1])
-    print(couples[-1])
+    train_ds, validation_ds = load_data()
     
     print_first_in_dataset(train_ds, 4, "./outputs/train_preview.png")
     print_first_in_dataset(validation_ds, 4, "./outputs/validation_preview.png")
