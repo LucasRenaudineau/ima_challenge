@@ -4,6 +4,11 @@ import random
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
+
+# List of labels
+LABELS = ["SNE", "LY", "MO", "EO", "BA", "VLY", "BNE", "MMY", "MY", "PMY", "BL", "PC", "PLY"]
+label_to_index = {label: idx for idx, label in enumerate(LABELS)}
+
 def oversample(couples):
     # Group by class
     by_class = defaultdict(list)
@@ -61,9 +66,6 @@ def print_first_in_dataset(dataset, n, filename="output.png"):
 
 def load_data():
 
-    # List of labels
-    LABELS = ["SNE", "LY", "MO", "EO", "BA", "VLY", "BNE", "MMY", "MY", "PMY", "BL", "PC", "PLY"]
-    label_to_index = {label: idx for idx, label in enumerate(LABELS)}
     
     # Load metadata CSV
     metadata = pd.read_csv("./IMA205-challenge/train_metadata.csv")
