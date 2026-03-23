@@ -54,7 +54,7 @@ if __name__ == "__main__":
         model = keras.models.load_model("./outputs/model_not_trained.keras")
 
         model.compile(
-            optimizer=keras.optimizers.Adam(),
+            optimizer=keras.optimizers.Adam(learning_rate = 1e-4),
             loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
             metrics=[
                 keras.metrics.SparseCategoricalAccuracy(name="accuracy"),
