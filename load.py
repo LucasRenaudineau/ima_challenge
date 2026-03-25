@@ -27,6 +27,21 @@ def oversample(couples):
  
     random.shuffle(oversampled)
     return oversampled
+
+def load_test_image(img_number):
+    num_str = tf.strings.as_string(img_number, width=5, fill='0')
+    path = tf.strings.join(["./IMA205-challenge/test/test_", num_str, ".png"])
+    image = tf.io.read_file(path)
+    image = tf.image.decode_png(image, channels=3)
+    image = tf.image.resize(image, [368, 368])
+    return image
+ 
+def load_test_data(num_test_images: int):
+    ds = tf.data.Dataset.from_tensor_slices(list(range(num_test_images)))
+    ds = ds.map(load_test_image, num_parallel_calls=tf.data.AUTOTUNE)
+    ds = ds.batch(BATCH_SIZE)
+    ds = ds.prefetch(tf.data.AUTOTUNE)
+    return ds
  
 # Helper: for the make_dataset function
 def load_image(img_number, label_index):

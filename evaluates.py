@@ -8,10 +8,8 @@ from load import *
 # Build test dataset using the same load_image helper (dummy label 0)
 NUM_TEST_IMAGES = 9634
  
-test_ds = tf.data.Dataset.from_tensor_slices((list(range(NUM_TEST_IMAGES)), [0] * NUM_TEST_IMAGES))
-test_ds = test_ds.map(load_image, num_parallel_calls=tf.data.AUTOTUNE)
-test_ds = test_ds.batch(BATCH_SIZE).prefetch(tf.data.AUTOTUNE)
- 
+test_ds = load_test_data(9634) 
+
 # Run predictions and build couples list : (image_number, class_index)
 def build_predictions(model, ds=None):
     if ds is None:
