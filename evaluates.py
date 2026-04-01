@@ -57,7 +57,7 @@ if __name__ == "__main__":
 #        val_couples = build_predictions(model, validation_ds)
 #        print(compute_f1(val_couples, validation_ds))
 #        print("-------------------")
-    model = keras.models.load_model("./outputs/model_phase2_epoch1.keras")
+    model = keras.models.load_model("./outputs/model_phase2_epoch0.keras")
     couples = build_predictions(model, ds=test_ds)
-    save_csv(couples, "predictions_0_58")
+    save_csv(couples, "predictions_0_70")
 

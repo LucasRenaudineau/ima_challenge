@@ -112,8 +112,8 @@ def load_data():
     train_couples = couples[:split_idx]
     validation_couples   = couples[split_idx:]
     train_couples_oversampled = oversample(train_couples)
-    # train_ds = make_dataset(train_couples_oversampled) # commented for the moment
-    train_ds = make_dataset(train_couples)
+    train_ds = make_dataset(train_couples_oversampled) # commented for the moment
+    # train_ds = make_dataset(train_couples)
     validation_ds = make_dataset(validation_couples)
     return train_ds, validation_ds
 
