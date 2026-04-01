@@ -22,7 +22,15 @@ def save_base_model():
     x = scale_layer(x)
     x = base_model(x, training=False)
     x = keras.layers.GlobalAveragePooling2D()(x)
-    x = keras.layers.Dropout(0.5)(x)  # Regularize with dropout
+
+    x = keras.layers.Dense(512, activation="relu")(x)
+    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.Dropout(0.4)(x)
+
+    x = keras.layers.Dense(128, activation="relu")(x)
+    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.Dropout(0.3)(x)
+
     outputs = keras.layers.Dense(13)(x)
     model = keras.Model(inputs, outputs)
     
