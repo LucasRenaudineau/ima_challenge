@@ -40,7 +40,7 @@ def train_one_epoch(model, epoch,frozen:bool):
 
 
     model.compile(
-        optimizer=keras.optimizers.Adam(learning_rate = 1e-4),
+        optimizer=keras.optimizers.Adam(learning_rate = 1e-5),
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=[
             keras.metrics.SparseCategoricalAccuracy(name="accuracy"),
@@ -66,20 +66,20 @@ if __name__ == "__main__":
         model = keras.models.load_model("./outputs/model_not_trained.keras")
 
         model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate = 1e-4),
+            optimizer=keras.optimizers.Adam(learning_rate = 1e-5),
             loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
             metrics=[
                 keras.metrics.SparseCategoricalAccuracy(name="accuracy"),
             ]
         )
-        for epoch in range(10):
-            train_one_epoch(model, epoch, True)
-            val_couples = build_predictions(model,validation_ds)
-            score_f1 = compute_f1(val_couples, validation_ds)
-            print(f"The F1 score of the epoch {epoch} is {score_f1}.")
+        #for epoch in range(10):
+            #train_one_epoch(model, epoch, True)
+            #val_couples = build_predictions(model,validation_ds)
+            #score_f1 = compute_f1(val_couples, validation_ds)
+            #print(f"The F1 score of the epoch {epoch} is {score_f1}.")
         # Phase 2 of training (with unfrozen base)
-        model = keras.models.load_model("./outputs/model_phase1_epoch6.keras") # Take the best model on the validation test !!
-        for epoch in range(5):
+        #model = keras.models.load_model("./outputs/model_phase2_epoch4.keras") # Take the best model on the validation test !!
+        for epoch in range(10):
             train_one_epoch(model,epoch, False)
             val_couples = build_predictions(model,validation_ds)
             score_f1 = compute_f1(val_couples, validation_ds)
