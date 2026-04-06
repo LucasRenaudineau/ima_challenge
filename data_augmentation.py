@@ -7,7 +7,7 @@ import numpy as np
 from load import *
 
 data_augmentation = keras.Sequential(
-    [layers.RandomFlip("horizontal"), layers.RandomFlip("vertical"), layers.RandomRotation(0.5),]
+    [layers.RandomFlip("horizontal"), layers.RandomFlip("vertical"), layers.RandomRotation(0.5), layers.GaussianNoise(0.02)]
 )
 # For the choice of data augmentation transformations, I searched there : https://www.tensorflow.org/tutorials/images/data_augmentation
 
