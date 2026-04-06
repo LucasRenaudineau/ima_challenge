@@ -23,6 +23,14 @@ def save_base_model():
     x = base_model(x, training=False)
     x = keras.layers.GlobalAveragePooling2D()(x)
 
+    x = keras.layers.Dense(2048, activation="relu")(x)
+    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.Dropout(0.4)(x)
+
+    x = keras.layers.Dense(1024, activation="relu")(x)
+    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.Dropout(0.4)(x)
+
     x = keras.layers.Dense(512, activation="relu")(x)
     x = keras.layers.BatchNormalization()(x)
     x = keras.layers.Dropout(0.4)(x)
