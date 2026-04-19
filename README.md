@@ -1,7 +1,36 @@
 # ima_challenge
 Image classification challenge implementation for Telecom Paris IMA205 course
 
-## Dataset
+# How to execute my project
+
+## How to set-up the files
+
+- Create an empty ./outputs/ directory at the root, this is where all output files from my programs will be generated.
+- Unzip the zip file containing all images at the root. The path of the train_metadata.csv should be ./IMA205-challenge/train_metadata.csv
+- Watch dependencies.txt if you need to train the model by yourself.
+
+## How to launch everything for the Random Forest method
+
+The files to execute in order are :
+- otsu.py
+- features.py
+- trees.py
+
+## How to launch everything for the SVM method
+
+The files to execute in order are :
+- otsu.py
+- features.py
+- svm.py
+If you already executed otsu.py and features.py for the last method, then you can execute only svm.py
+
+## How to launch everything for the deep learning method
+The files to execute in order are :
+- model.py
+- training.py
+- evaluates.py
+
+# Dataset
 
 The dataset is downloaded by :
 - loading a kaggle API token
@@ -11,6 +40,23 @@ It is situated in the folder ./IMA205-challenge and inside are the train and tes
 80% of the data is used for training and 20% for validation.
 
 To see how my code loads the dataset, see load.py
+
+# Feature extraction
+
+Feature extraction is in two steps : OTSU and then feature extraction using skimage and pandas functions.
+The OTSU algorithm is implemented in the otsu.py file.
+The feature extraction algorithm is implemented in the features.py file.
+
+# Random Forest method
+
+The Random Forest method is implemented in the trees.py file.
+In practice, I used xgboost for increased performances.
+
+# SVM method
+
+All the method is implemented in the svm.py file.
+
+# Deep learning method
 
 ## Data aumentation
 
