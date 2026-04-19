@@ -10,12 +10,11 @@ from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.metrics import classification_report, f1_score, confusion_matrix
 from sklearn.utils.class_weight import compute_sample_weight
-from dotenv import load_dotenv
-
 #from features import load_features
 
-FEATURES_CSV = "./outputs/features.csv"
-OUTPUT_DIR = "./outputs"
+FEATURES_CSV  = "./outputs/features.csv"
+METADATA_CSV  = "./IMA205-challenge/train_metadata.csv"
+OUTPUT_DIR    = "./outputs"
 
 def load_features(input_csv: str = "outputs/features.csv") -> pd.DataFrame:
     # Loads a previously saved feature CSV from disk
@@ -103,7 +102,7 @@ def split_data(X, y):
 
     t0 = time.time()
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y
+        X, y, test_size=0.2, stratify=y
     )
     sample_weights = compute_sample_weight(class_weight="balanced", y=y_train)
 
@@ -122,15 +121,15 @@ def search_hyperparameters(X_train, y_train, sample_weights, n_iter=20):
     # NaN imputation + feature scaling happen inside the pipeline to avoid data leakage
     pipeline = Pipeline([
         ("imputer", SimpleImputer(strategy="median")),
-        ("scaler",  StandardScaler()),
-        ("svm",     SVC(random_state=42, class_weight="balanced", cache_size=1000)),
+        ("scaler", StandardScaler()),
+        ("svm", SVC(class_weight="balanced", cache_size=1000)),
     ])
 
     # svm__ prefix targets the SVC step inside the pipeline
     param_dist = {
-        "svm__C":      [0.01, 0.1, 1, 10, 100],
+        "svm__C": [0.01, 0.1, 1, 10, 100],
         "svm__kernel": ["rbf", "poly", "sigmoid"],
-        "svm__gamma":  ["scale", "auto", 0.001, 0.01, 0.1],
+        "svm__gamma": ["scale", "auto", 0.001, 0.01, 0.1],
         "svm__degree": [2, 3, 4],
     }
 
@@ -259,19 +258,14 @@ if __name__ == "__main__":
     print(" SVM CLASSIFIER — starting")
     print("=" * 60)
 
-    load_dotenv()
-    CSV_PATH = os.getenv("METADATA_CSV_PATH")
-
-    if not CSV_PATH:
-        raise ValueError("ERROR: METADATA_CSV_PATH not defined in .env!")
     if not os.path.isfile(FEATURES_CSV):
-        raise FileNotFoundError(f"'{FEATURES_CSV}' not found. Run feature_extraction.py first.")
+        raise FileNotFoundError(f"'{FEATURES_CSV}' not found. Run features.py first.")
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     # Load, merge, prepare
     df_features = load_features(FEATURES_CSV)
-    df = merge_with_labels(df_features, CSV_PATH)
+    df = merge_with_labels(df_features, METADATA_CSV)
     X, y, encoder = prepare_features(df)
     X_train, X_test, y_train, y_test, sample_weights = split_data(X, y)
 

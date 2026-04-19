@@ -5,7 +5,6 @@ import pandas as pd
 from skimage import filters
 from skimage.measure import regionprops_table
 from skimage.morphology import remove_small_objects, remove_small_holes
-from dotenv import load_dotenv
 
 # Reuse image loading and segmentation from otsu.py
 from otsu import (
@@ -19,8 +18,9 @@ from otsu import (
 
 # Hyperparameters that I had to tune
 
-CROP_PARAMS = (104, 104, 159) # (crop_x, crop_y, crop_size)
-THRESHOLDS  = (0.68, 0.92, 0.08, 0.10, 0.97) # (hue_min, hue_max, sat_min, val_min, val_max)
+CROP_PARAMS  = (104, 104, 159) # (crop_x, crop_y, crop_size)
+THRESHOLDS   = (0.68, 0.92, 0.08, 0.10, 0.97) # (hue_min, hue_max, sat_min, val_min, val_max)
+TRAIN_FOLDER = "./IMA205-challenge/train/"
 OTSU_CHANNEL = "saturation" # channel passed to Otsu (value or saturation, but saturation is better)
 MIN_OBJECT_SIZE = 50 # px — remove_small_objects / remove_small_holes
 REGION_PROPS = ("area", "perimeter", "eccentricity", "solidity", "extent")
@@ -163,11 +163,5 @@ def save_features(df: pd.DataFrame, output_csv: str = "outputs/features.csv") ->
     print(f"Features saved to {output_csv}")
 
 if __name__ == "__main__":
-    load_dotenv()
-
-    FOLDER_PATH = os.getenv("TRAIN_FOLDER_PATH")
-    if not FOLDER_PATH:
-        raise ValueError("ERROR: TRAIN_FOLDER_PATH not defined in .env ! You must write in this form TRAIN_FOLDER_PATH = <file of the train_folder_images, without quotation marks>")
-
-    dataset_features = build_feature_dataset(FOLDER_PATH, CROP_PARAMS, THRESHOLDS)
+    dataset_features = build_feature_dataset(TRAIN_FOLDER, CROP_PARAMS, THRESHOLDS)
     save_features(dataset_features, "outputs/features.csv")
