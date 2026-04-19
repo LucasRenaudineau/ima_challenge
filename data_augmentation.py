@@ -12,7 +12,7 @@ data_augmentation = keras.Sequential(
 # For the choice of data augmentation transformations, I searched there : https://www.tensorflow.org/tutorials/images/data_augmentation
 
 def print_first_in_dataset_augmented(dataset, n=9):
-    for i, (image, label_index) in enumerate(dataset.take(n)):
+    for i, (image, label_index) in enumerate(dataset.unbatch().take(n)):
         plt.figure(figsize=(10, 10))
         for j in range(n):
             ax = plt.subplot(3, 3, j + 1)
@@ -28,4 +28,5 @@ def print_first_in_dataset_augmented(dataset, n=9):
         plt.close()
 
 if __name__ == "__main__":
+    train_ds, validation_ds = load_data()
     print_first_in_dataset_augmented(train_ds,9)
